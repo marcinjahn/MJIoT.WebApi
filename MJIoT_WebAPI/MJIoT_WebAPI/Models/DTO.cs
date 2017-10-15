@@ -5,12 +5,12 @@ using System.Web;
 
 namespace MJIoT_WebAPI.Models
 {
-    public class DevicesResult
+    public class DevicesDTO
     {
-        public List<DeviceResult> Devices { get; set; }
+        public List<DeviceDTO> Devices { get; set; }
     }
 
-    public class DeviceResult
+    public class DeviceDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
