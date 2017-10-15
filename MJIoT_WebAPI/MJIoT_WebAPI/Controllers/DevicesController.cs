@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MJIoT_WebAPI.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,6 +10,12 @@ namespace MJIoT_WebAPI.Controllers
 {
     public class DevicesController : ApiController
     {
+        private MJIoT_DBModel.MJIoTDBContext context = new MJIoT_DBModel.MJIoTDBContext();
 
+        public DevicesDTO GetDevices()
+        {
+
+            return null;
+        }
     }
 }
