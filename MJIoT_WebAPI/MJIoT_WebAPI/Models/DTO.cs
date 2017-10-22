@@ -7,10 +7,10 @@ namespace MJIoT_WebAPI.Models
 {
 
     //informacja na temat urządzeń przesyłana do aplikacji mobilnej
-    public class DevicesDTO
-    {
-        public List<DeviceDTO> Devices { get; set; }
-    }
+    //public class DevicesDTO
+    //{
+    //    public List<DeviceDTO> Devices { get; set; }
+    //}
 
     public class DeviceDTO
     {
@@ -19,7 +19,7 @@ namespace MJIoT_WebAPI.Models
         public DeviceCommunicationType CommunicationType { get; set; }  //sender lub listener lub bi-directional
         public bool IsConnected { get; set; }
         public List<string> ConnectedListeners { get; set; } //zawiera nazwy urządzeń
-        public List<string> ConnectedSenders { get; set; } //zawiera nazwy urządzeń
+        //public List<string> ConnectedSenders { get; set; } //zawiera nazwy urządzeń   na razie to pomijam
         //przydałby się jeszcze obrazek
     }
 }
