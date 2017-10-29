@@ -19,6 +19,7 @@ namespace MJIoT_WebAPI.Controllers
 
             using (var context = new MJIoTDBContext())
             {
+
                 var userCheck = context.Users.Where(n => n.Login == user && n.Password == password).FirstOrDefault();
                 if (userCheck == null)
                     throw new HttpResponseException(HttpStatusCode.Unauthorized);  //mozna też dodac jakąś wiadomość do exception
@@ -28,8 +29,8 @@ namespace MJIoT_WebAPI.Controllers
                 foreach (var device in devices)
                 {
                     DeviceCommunicationType communicationType;
-                    var senderProperty = device.DeviceType.SenderProperty;
-                    var listenerProperty = device.DeviceType.ListenerProperty;
+                    PropertyType senderProperty = device.DeviceType.SenderProperty;
+                    PropertyType listenerProperty = device.DeviceType.ListenerProperty;
                     if (senderProperty != null && listenerProperty != null)
                         communicationType = DeviceCommunicationType.bidirectional;
                     else if (senderProperty == null && listenerProperty != null)

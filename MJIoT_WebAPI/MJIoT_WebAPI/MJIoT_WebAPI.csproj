@@ -55,7 +55,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="MJIoT_DBModel">
+    <Reference Include="MJIoT_DBModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\mjiot_dbmodel\MJIoT_DBModel\MJIoT_DBModel\bin\Debug\MJIoT_DBModel.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
