@@ -24,28 +24,32 @@ namespace MJIoT_WebAPI.Controllers
                 if (userCheck == null)
                     throw new HttpResponseException(HttpStatusCode.Unauthorized);  //mozna też dodac jakąś wiadomość do exception
 
-                var devices = context.Devices.Where(n => n.User.Id == userCheck.Id).ToList();
+                var devices = context.Devices
+                    .Include("DeviceType.SenderProperty")
+                    .Include("DeviceType.ListenerProperty")
+                    .Where(n => n.User.Id == userCheck.Id).ToList();
 
                 foreach (var device in devices)
                 {
                     DeviceCommunicationType communicationType;
+
                     PropertyType senderProperty = device.DeviceType.SenderProperty;
                     PropertyType listenerProperty = device.DeviceType.ListenerProperty;
                     if (senderProperty != null && listenerProperty != null)
                         communicationType = DeviceCommunicationType.bidirectional;
                     else if (senderProperty == null && listenerProperty != null)
-                        communicationType = DeviceCommunicationType.sender;
-                    else
                         communicationType = DeviceCommunicationType.listener;
-
+                    else
+                        communicationType = DeviceCommunicationType.sender;
+                   
 
                     var item = new DeviceDTO
                     {
                         Id = device.Id,
-                        Name = context.DeviceProperties.Where(n => n.Device == device && n.PropertyType.Name == "Name").FirstOrDefault().Value,
+                        Name = context.DeviceProperties.Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "DisplayName").FirstOrDefault().Value,
                         CommunicationType = communicationType,
-                        IsConnected = context.DeviceProperties.Where(n => n.Device == device && n.PropertyType.Name == "IsConnected").FirstOrDefault().Value == "true" ? true : false,
-                        ConnectedListeners = context.DeviceProperties.Where(n => n.PropertyType.Name == "Name" && n.Device == device).Select(n => n.Value).ToList()
+                        IsConnected = context.DeviceProperties.Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "IsConnected").FirstOrDefault().Value == "true" ? true : false,
+                        ConnectedListeners = context.DeviceProperties.Where(n => n.PropertyType.Name == "Name" && n.Device.Id == device.Id).Select(n => n.Value).ToList()
                     };
 
                     result.Add(item);

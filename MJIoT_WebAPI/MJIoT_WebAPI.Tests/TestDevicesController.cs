@@ -13,7 +13,7 @@ namespace MJIoT_WebAPI.Tests
     {
 
         [TestMethod]
-        public void GetAllProductsForUser()
+        public void GetAllDevicesForUser()
         {
 
 
