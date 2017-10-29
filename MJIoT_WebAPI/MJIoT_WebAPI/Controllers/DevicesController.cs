@@ -20,7 +20,10 @@ namespace MJIoT_WebAPI.Controllers
             using (var context = new MJIoTDBContext())
             {
 
-                var userCheck = context.Users.Where(n => n.Login == user && n.Password == password).FirstOrDefault();
+                var userCheck = context.Users
+                    .Where(n => n.Login == user && n.Password == password)
+                    .FirstOrDefault();
+
                 if (userCheck == null)
                     throw new HttpResponseException(HttpStatusCode.Unauthorized);  //mozna też dodac jakąś wiadomość do exception
 
@@ -46,10 +49,17 @@ namespace MJIoT_WebAPI.Controllers
                     var item = new DeviceDTO
                     {
                         Id = device.Id,
-                        Name = context.DeviceProperties.Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "DisplayName").FirstOrDefault().Value,
+                        Name = context.DeviceProperties
+                            .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "DisplayName")
+                            .FirstOrDefault().Value,
                         CommunicationType = communicationType,
-                        IsConnected = context.DeviceProperties.Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "IsConnected").FirstOrDefault().Value == "true" ? true : false,
-                        ConnectedListeners = context.DeviceProperties.Where(n => n.PropertyType.Name == "Name" && n.Device.Id == device.Id).Select(n => n.Value).ToList()
+                        IsConnected = context.DeviceProperties
+                            .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "IsConnected")
+                            .FirstOrDefault()
+                            .Value == "true" ? true : false,
+                        ConnectedListeners = context.DeviceProperties
+                            .Where(n => n.PropertyType.Name == "Name" && n.Device.Id == device.Id)
+                            .Select(n => n.Value).ToList()
                     };
 
                     result.Add(item);
