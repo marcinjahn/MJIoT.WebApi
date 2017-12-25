@@ -102,6 +102,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Enums\DeviceCommunicationType.cs" />
+    <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Models\DTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

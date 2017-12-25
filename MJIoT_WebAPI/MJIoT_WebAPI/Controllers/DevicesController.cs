@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using MJIoT_DBModel;
+using MJIoT_WebAPI.Helpers;
 
 namespace MJIoT_WebAPI.Controllers
 {
@@ -25,9 +26,7 @@ namespace MJIoT_WebAPI.Controllers
 
             using (var context = new MJIoTDBContext())
             {
-                var userCheck = context.Users
-                    .Where(n => n.Login == user && n.Password == password)
-                    .FirstOrDefault();
+                var userCheck = Helper.CheckUser(user, password);
 
                 if (userCheck == null)
                 {
@@ -42,7 +41,7 @@ namespace MJIoT_WebAPI.Controllers
                     .Include("DeviceType.SenderProperty")
                     .Include("DeviceType.ListenerProperty")
                     .Include("ListenerDevices")
-                    .Where(n => n.User.Id == userCheck.Id).ToList();
+                    .Where(n => n.User.Id == userCheck).ToList();
 
                 foreach (var device in devices)
                 {
@@ -99,9 +98,11 @@ namespace MJIoT_WebAPI.Controllers
             return result;
         }
 
+        //Sets listeners overwriting the previous set of listeners. Therefore the invoker should supply ALL listeners - newly added and previous ones that should stay.
+        //listeners is a list of IDs.
         [HttpPost]
         [ActionName("SetListeners")]
-        public void SetListeners()
+        public void SetListeners(string user, string password, int senderId, List<int> listeners)
         {
 
         }
