@@ -20,6 +20,7 @@ namespace MJIoT_WebAPI.Controllers
 
         //MESSAGES USED TO RETURN ERRORS:
         private string BadUserMessage = "You do not have access to MJ IoT System! (User not recognized)";
+        private string PropertyNonExistentMessage = "This property does not exist in the system nad cannot be changed!";
 
 
 
@@ -149,7 +150,36 @@ namespace MJIoT_WebAPI.Controllers
         [ActionName("SetProperty")]
         public HttpResponseMessage SetProperty(SetPropertyParams parameters)
         {
+            var userCheck = Helper.CheckUser(parameters.User, parameters.Password);
 
+            if (userCheck == null)
+            {
+                HttpResponseMessage message = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+                {
+                    Content = new StringContent(BadUserMessage)
+                };
+                throw new HttpResponseException(message);
+            }
+
+            using (var context = new MJIoTDBContext())
+            {
+                var property = context.DeviceProperties
+                    .Include("Device")
+                    .Where(n => n.Device.Id == parameters.DeviceId && n.Id == parameters.PropertyId)
+                    .FirstOrDefault();
+
+                if (property == null)
+                {
+                    HttpResponseMessage message = new HttpResponseMessage(HttpStatusCode.NotFound)
+                    {
+                        Content = new StringContent(PropertyNonExistentMessage)
+                    };
+                    throw new HttpResponseException(message);
+                }
+
+                property.Value = parameters.Value;
+                context.SaveChanges();
+            }
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 

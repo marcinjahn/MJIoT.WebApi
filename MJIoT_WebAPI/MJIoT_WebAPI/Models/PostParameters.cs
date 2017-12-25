@@ -24,7 +24,7 @@ namespace MJIoT_WebAPI.Models
     public class SetPropertyParams : UserParams
     {
         public int DeviceId { get; set; }
-        public string PropertyId { get; set; }
+        public int PropertyId { get; set; }
         public string Value { get; set; }
     }
 
