@@ -11,25 +11,37 @@ namespace MJIoT_WebAPI.Controllers
 {
     public class DevicesController : ApiController
     {
+        //[ActionName("getit")]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new[] { "first", "second" };
+        //}
+
         [HttpPost]
-        [ActionName("GetList")]
+        [ActionName("GetDevices")]
         public List<DeviceDTO> GetDevices(string user, string password)
         {
             List<DeviceDTO> result = new List<DeviceDTO>();
 
             using (var context = new MJIoTDBContext())
             {
-
                 var userCheck = context.Users
                     .Where(n => n.Login == user && n.Password == password)
                     .FirstOrDefault();
 
                 if (userCheck == null)
-                    throw new HttpResponseException(HttpStatusCode.Unauthorized);  //mozna też dodac jakąś wiadomość do exception
+                {
+                    HttpResponseMessage message = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+                    {
+                        Content = new StringContent("You do not have access to MJ IoT System! (User not recognized)")
+                    };
+                    throw new HttpResponseException(message);
+                }
 
                 var devices = context.Devices
                     .Include("DeviceType.SenderProperty")
                     .Include("DeviceType.ListenerProperty")
+                    .Include("ListenerDevices")
                     .Where(n => n.User.Id == userCheck.Id).ToList();
 
                 foreach (var device in devices)
@@ -44,22 +56,41 @@ namespace MJIoT_WebAPI.Controllers
                         communicationType = DeviceCommunicationType.listener;
                     else
                         communicationType = DeviceCommunicationType.sender;
-                   
+
+
+                    var name = context.DeviceProperties.Include("PropertyType")
+                            .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "DisplayName")
+                            .FirstOrDefault().Value;
+
+                    var isConnected = context.DeviceProperties.Include("PropertyType")
+                            .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "IsConnected")
+                            .FirstOrDefault()
+                            .Value == "true" ? true : false;
+
+
+                    List<ListenerDTO> connectedListeners = new List<ListenerDTO>();
+                    var listeners = device.ListenerDevices.ToList();
+
+                    foreach (var listener in listeners)
+                    {
+                        var listenerDTO = new ListenerDTO
+                        {
+                            Id = listener.Id,
+                            Name = context.DeviceProperties.Include("PropertyType")
+                            .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "DisplayName")
+                            .FirstOrDefault().Value
+                        };
+
+                        connectedListeners.Add(listenerDTO);
+                    }
 
                     var item = new DeviceDTO
                     {
                         Id = device.Id,
-                        Name = context.DeviceProperties
-                            .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "DisplayName")
-                            .FirstOrDefault().Value,
+                        Name = name,
                         CommunicationType = communicationType,
-                        IsConnected = context.DeviceProperties
-                            .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "IsConnected")
-                            .FirstOrDefault()
-                            .Value == "true" ? true : false,
-                        ConnectedListeners = context.DeviceProperties
-                            .Where(n => n.PropertyType.Name == "Name" && n.Device.Id == device.Id)
-                            .Select(n => n.Value).ToList()
+                        IsConnected = isConnected,
+                        ConnectedListeners = connectedListeners
                     };
 
                     result.Add(item);
@@ -77,9 +108,17 @@ namespace MJIoT_WebAPI.Controllers
 
         [HttpPost]
         [ActionName("SetProperty")]
-        public void SetProperty()
+        public void SetProperty(int deviceId, string propertyName, string value)
         {
 
         }
+
+        [HttpPost]
+        [ActionName("GetProperty")]
+        public string GetProperty(int deviceId, string propertyName)
+        {
+            return "test123";
+        }
+
     }
 }
