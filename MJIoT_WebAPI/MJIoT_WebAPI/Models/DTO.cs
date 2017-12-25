@@ -33,6 +33,7 @@ namespace MJIoT_WebAPI.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public bool IcConfigurable { get; set; }
+        public bool IsConfigurable { get; set; }
+        public string Value { get; set; }
     }
 }
