@@ -28,4 +28,11 @@ namespace MJIoT_WebAPI.Models
         public int Id { get; set; }
         public string Name { get; set; }
     }
+
+    public class PropertyDTO
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool IcConfigurable { get; set; }
+    }
 }

@@ -18,21 +18,26 @@ namespace MJIoT_WebAPI.Controllers
         //    return new[] { "first", "second" };
         //}
 
+        //MESSAGES USED TO RETURN ERRORS:
+        private string BadUserMessage = "You do not have access to MJ IoT System! (User not recognized)";
+
+
+
         [HttpPost]
         [ActionName("GetDevices")]
-        public List<DeviceDTO> GetDevices(string user, string password)
+        public List<DeviceDTO> GetDevices(GetDevicesParams parameters)
         {
             List<DeviceDTO> result = new List<DeviceDTO>();
 
             using (var context = new MJIoTDBContext())
             {
-                var userCheck = Helper.CheckUser(user, password);
+                var userCheck = Helper.CheckUser(parameters.User, parameters.Password);
 
                 if (userCheck == null)
                 {
                     HttpResponseMessage message = new HttpResponseMessage(HttpStatusCode.Unauthorized)
                     {
-                        Content = new StringContent("You do not have access to MJ IoT System! (User not recognized)")
+                        Content = new StringContent(BadUserMessage)
                     };
                     throw new HttpResponseException(message);
                 }
@@ -102,23 +107,58 @@ namespace MJIoT_WebAPI.Controllers
         //listeners is a list of IDs.
         [HttpPost]
         [ActionName("SetListeners")]
-        public void SetListeners(string user, string password, int senderId, List<int> listeners)
+        public HttpResponseMessage SetListeners(SetListenersParams parameters)
         {
+            var userCheck = Helper.CheckUser(parameters.User, parameters.Password);
 
+            if (userCheck == null)
+            {
+                HttpResponseMessage message = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+                {
+                    Content = new StringContent(BadUserMessage)
+                };
+                throw new HttpResponseException(message);
+            }
+
+            using (var context = new MJIoTDBContext())
+            {
+                var sender = context.Devices
+                    .Include("ListenerDevices").Include("User")
+                    .Where(n => n.Id == parameters.SenderId && n.User.Id == userCheck)
+                    .FirstOrDefault();
+
+                List<MJIoT_DBModel.Device> newListeners = new List<MJIoT_DBModel.Device>();
+
+                foreach (var listener in parameters.Listeners)
+                {
+                    var newListener = context.Devices
+                        .Where(n => n.Id == listener)
+                        .FirstOrDefault();
+
+                    newListeners.Add(newListener);
+                }
+
+                sender.ListenerDevices = newListeners;
+                context.SaveChanges();
+            }
+
+            return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
         [HttpPost]
         [ActionName("SetProperty")]
-        public void SetProperty(int deviceId, string propertyName, string value)
+        public HttpResponseMessage SetProperty(SetPropertyParams parameters)
         {
 
+            return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
         [HttpPost]
-        [ActionName("GetProperty")]
-        public string GetProperty(int deviceId, string propertyName)
+        [ActionName("GetProperties")]
+        public List<PropertyDTO> GetProperties(GetPropertiesParams parameters)
         {
-            return "test123";
+
+            return new List<PropertyDTO>();
         }
 
     }

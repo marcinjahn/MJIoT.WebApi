@@ -17,10 +17,10 @@ namespace MJIoT_WebAPI.Tests
         {
 
 
-            var controller = new DevicesController();
+            //var controller = new DevicesController();
 
-            var result = controller.GetDevices("user1", "pass1");
-            Assert.IsTrue(true);
+            //var result = controller.GetDevices("user1", "pass1");
+            //Assert.IsTrue(true);
         }
 
     }

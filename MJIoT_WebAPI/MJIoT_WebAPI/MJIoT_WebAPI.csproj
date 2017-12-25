@@ -104,6 +104,7 @@
     <Compile Include="Enums\DeviceCommunicationType.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Models\DTO.cs" />
+    <Compile Include="Models\PostParameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
