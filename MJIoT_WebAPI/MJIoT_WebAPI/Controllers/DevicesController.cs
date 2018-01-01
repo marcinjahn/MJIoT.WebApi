@@ -22,7 +22,15 @@ namespace MJIoT_WebAPI.Controllers
         private string BadUserMessage = "You do not have access to MJ IoT System! (User not recognized)";
         private string PropertyNonExistentMessage = "This property does not exist in the system nad cannot be changed!";
 
+        public bool CheckUser(CheckUserParams parameters)
+        {
+            var userCheck = Helper.CheckUser(parameters.User, parameters.Password);
 
+            if (userCheck != null)
+                return true;
+            else
+                return false;
+        }
 
         [HttpPost]
         [ActionName("GetDevices")]
@@ -82,7 +90,7 @@ namespace MJIoT_WebAPI.Controllers
                         {
                             Id = listener.Id,
                             Name = context.DeviceProperties.Include("PropertyType")
-                            .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "DisplayName")
+                            .Where(n => n.Device.Id == listener.Id && n.PropertyType.Name == "DisplayName")
                             .FirstOrDefault().Value
                         };
 

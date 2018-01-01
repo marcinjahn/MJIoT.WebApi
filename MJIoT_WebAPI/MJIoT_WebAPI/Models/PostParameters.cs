@@ -11,6 +11,10 @@ namespace MJIoT_WebAPI.Models
         public string Password { get; set; }
     }
 
+    public class CheckUserParams : UserParams
+    {
+    }
+
     public class GetDevicesParams : UserParams
     {
     }
