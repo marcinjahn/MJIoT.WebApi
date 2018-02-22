@@ -7,11 +7,14 @@ using System.Net.Http;
 using System.Web.Http;
 using MJIoT_DBModel;
 using MJIoT_WebAPI.Helpers;
+using System.Threading.Tasks;
+using Microsoft.Azure.Devices;
 
 namespace MJIoT_WebAPI.Controllers
 {
     public class DevicesController : ApiController
     {
+        static string connectionString = "HostName=MJIoT-Hub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=SzQKdF1y6bAEgGfZei2bmq1Jd83odc+B2x197n2MtxA=";
         //[ActionName("getit")]
         //public IEnumerable<string> Get()
         //{
@@ -34,7 +37,7 @@ namespace MJIoT_WebAPI.Controllers
 
         [HttpPost]
         [ActionName("GetDevices")]
-        public List<DeviceDTO> GetDevices(GetDevicesParams parameters)
+        public async Task<List<DeviceDTO>> GetDevices(GetDevicesParams parameters)
         {
             List<DeviceDTO> result = new List<DeviceDTO>();
 
@@ -57,6 +60,9 @@ namespace MJIoT_WebAPI.Controllers
                     .Include("ListenerDevices")
                     .Where(n => n.User.Id == userCheck).ToList();
 
+                var serviceClient = ServiceClient.CreateFromConnectionString(connectionString);
+
+
                 foreach (var device in devices)
                 {
                     DeviceCommunicationType communicationType;
@@ -75,10 +81,12 @@ namespace MJIoT_WebAPI.Controllers
                             .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "DisplayName")
                             .FirstOrDefault().Value;
 
-                    var isConnected = context.DeviceProperties.Include("PropertyType")
-                            .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "IsConnected")
-                            .FirstOrDefault()
-                            .Value == "true" ? true : false;
+                    //var isConnected = context.DeviceProperties.Include("PropertyType")
+                    //        .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "IsConnected")
+                    //        .FirstOrDefault()
+                    //        .Value == "true" ? true : false;
+
+                    var isConnected = await Helpers.Helper.IsDeviceOnline(device.Id.ToString(), serviceClient);
 
 
                     List<ListenerDTO> connectedListeners = new List<ListenerDTO>();
@@ -138,13 +146,16 @@ namespace MJIoT_WebAPI.Controllers
 
                 List<MJIoT_DBModel.Device> newListeners = new List<MJIoT_DBModel.Device>();
 
-                foreach (var listener in parameters.Listeners)
+                if (parameters.Listeners != null) //Only iterate if list is not empty
                 {
-                    var newListener = context.Devices
-                        .Where(n => n.Id == listener)
-                        .FirstOrDefault();
+                    foreach (var listener in parameters.Listeners)
+                    {
+                        var newListener = context.Devices
+                            .Where(n => n.Id == listener)
+                            .FirstOrDefault();
 
-                    newListeners.Add(newListener);
+                        newListeners.Add(newListener);
+                    }
                 }
 
                 sender.ListenerDevices = newListeners;
