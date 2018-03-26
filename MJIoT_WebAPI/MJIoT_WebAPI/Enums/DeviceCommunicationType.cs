@@ -1,9 +1,10 @@
 ﻿namespace MJIoT_WebAPI.Models
 {
-    public enum DeviceCommunicationType
+    public enum DeviceRole
     {
         sender,
         listener,
-        bidirectional
+        bidirectional,
+        none
     }
 }

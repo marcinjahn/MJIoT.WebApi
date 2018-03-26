@@ -158,9 +158,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Enums\DeviceCommunicationType.cs" />
-    <Compile Include="Helpers\Helper.cs" />
+    <Compile Include="Helpers\IoTHubServices.cs" />
+    <Compile Include="Helpers\ModelStorageSQL.cs" />
+    <Compile Include="Helpers\RequestHandler.cs" />
     <Compile Include="Models\DTO.cs" />
     <Compile Include="Models\PostParameters.cs" />
+    <Compile Include="Models\PropertyListenersInfo.cs" />
+    <Compile Include="Models\SingleListenerInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
