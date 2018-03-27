@@ -5,22 +5,23 @@ using System.Threading.Tasks;
 
 namespace MJIoT_WebAPI.Helpers
 {
-    public class IoTHubServices
+
+    public class IoTHubService : IDevicesAvailabilityService
     {
         ServiceClient _serviceClient;
         string connectionString = "HostName=MJIoT-Hub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=SzQKdF1y6bAEgGfZei2bmq1Jd83odc+B2x197n2MtxA=";
 
-        public IoTHubServices()
+        public IoTHubService()
         {
             _serviceClient = ServiceClient.CreateFromConnectionString(connectionString);
         }
 
-        public async Task<List<Boolean>> AreDevicesOnline(List<string> ids)
+        public async Task<List<Boolean>> AreDevicesOnline(List<string> devicesIds)
         {
             List<Task<Boolean>> results = new List<Task<bool>>();
 
             //Console.WriteLine(DateTime.Now.ToString());
-            foreach (var id in ids)
+            foreach (var id in devicesIds)
             {
                 results.Add(IsDeviceOnline(id));
             }

@@ -6,20 +6,23 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using MJIoT.Storage.PropertyValues;
 
 namespace MJIoT_WebAPI.Helpers
 {
     public class RequestHandler
     {
+        IPropertyValuesStorage _propertyStorage;
         IModelStorage _modelStorage;
-        IoTHubServices iotHubServices;
+        IoTHubService iotHubServices;
 
         string BadUserMessage = "You do not have access to MJ IoT System! (User not recognized)";
         string PropertyNonExistentMessage = "This property does not exist in the system nad cannot be changed!";
 
-        public RequestHandler(IModelStorage modelStorage)
+        public RequestHandler(IModelStorage modelStorage, IPropertyValuesStorage propertyStorage)
         {
             _modelStorage = modelStorage;
+            _propertyStorage = propertyStorage;
         }
 
         public int? DoUserCheck(string login, string password)
@@ -36,7 +39,7 @@ namespace MJIoT_WebAPI.Helpers
             var userId = DoUserCheck(parameters.User, parameters.Password);
             var devices = _modelStorage.GetDevicesOfUser(userId);
 
-            iotHubServices = new IoTHubServices();
+            iotHubServices = new IoTHubService();
 
             List<DeviceDTO> result = new List<DeviceDTO>();
             foreach (var device in devices)
@@ -50,7 +53,8 @@ namespace MJIoT_WebAPI.Helpers
 
         private async Task<DeviceDTO> GetDeviceDTO(MJIoT_DBModel.Device device)
         {
-            var name = _modelStorage.GetDeviceName(device);
+            //var name = _modelStorage.GetDeviceName(device);
+            var name = await _propertyStorage.GetPropertyValueAsync(device.Id, "Name");
             var isConnected = await iotHubServices.IsDeviceOnline(device.Id.ToString());
             var deviceRole = _modelStorage.GetDeviceRole(device);
 

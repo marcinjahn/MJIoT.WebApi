@@ -71,6 +71,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\mjiot_dbmodel\MJIoT_DBModel\MJIoT_DBModel\bin\Debug\MJIoT_DBModel.dll</HintPath>
     </Reference>
+    <Reference Include="MJIoT_PropertyDataStorage">
+      <HintPath>..\..\..\..\..\..\source\repos\MJIoT_PropertyDataStorage\MJIoT_PropertyDataStorage\bin\Debug\MJIoT_PropertyDataStorage.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -158,6 +161,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Enums\DeviceCommunicationType.cs" />
+    <Compile Include="Helpers\IDevicesAvailabilityService.cs" />
+    <Compile Include="Helpers\IModelStorage.cs" />
     <Compile Include="Helpers\IoTHubServices.cs" />
     <Compile Include="Helpers\ModelStorageSQL.cs" />
     <Compile Include="Helpers\RequestHandler.cs" />

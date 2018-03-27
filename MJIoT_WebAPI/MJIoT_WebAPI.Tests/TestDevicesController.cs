@@ -9,6 +9,8 @@ using MJIoT_WebAPI.Helpers;
 
 using MJIoT_DBModel;
 
+using MJIoT.Storage.PropertyValues;
+
 namespace MJIoT_WebAPI.Tests
 {
     [TestClass]
@@ -22,7 +24,7 @@ namespace MJIoT_WebAPI.Tests
 
             //var result = await controller.GetDevices(new Models.GetDevicesParams { User = "user1", Password="pass1" });
 
-            var handler = new RequestHandler(new ModelStorageSQL());
+            var handler = new RequestHandler(new ModelStorageSQL(), new DocumentDbRepository());
             var result = await handler.GetDevices(new Models.GetDevicesParams { User = "user1", Password = "pass1" });
             Assert.IsTrue(true);
         }
@@ -33,7 +35,7 @@ namespace MJIoT_WebAPI.Tests
             var context = new MJIoTDBContext();
             var device = context.Devices.Where(n => n.Id == 7).FirstOrDefault();
 
-            var handler = new RequestHandler(new ModelStorageSQL());
+            var handler = new RequestHandler(new ModelStorageSQL(), new DocumentDbRepository());
 
             PrivateObject obj = new PrivateObject(handler);
             obj.Invoke("GenerateListenersData", device);

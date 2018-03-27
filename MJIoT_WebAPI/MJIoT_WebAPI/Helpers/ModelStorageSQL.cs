@@ -8,14 +8,6 @@ using MJIoT_WebAPI.Models;
 
 namespace MJIoT_WebAPI.Helpers
 {
-    public interface IModelStorage
-    {
-        int? GetUserId(string user, string password);
-        string GetDeviceName(MJIoT_DBModel.Device device);
-        List<MJIoT_DBModel.Device> GetDevicesOfUser(int? userId);
-        DeviceRole GetDeviceRole(MJIoT_DBModel.Device device);
-        List<Connection> GetConnections(Device device);
-    }
 
 
     public class ModelStorageSQL : IModelStorage
@@ -45,7 +37,7 @@ namespace MJIoT_WebAPI.Helpers
         {
             return _context.DeviceProperties.Include("PropertyType")
                             .Where(n => n.Device.Id == device.Id && n.PropertyType.Name == "DisplayName")
-                            .FirstOrDefault().Value;
+                            .FirstOrDefault().PropertyValue;
         }
 
 
