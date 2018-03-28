@@ -33,7 +33,7 @@ namespace MJIoT_WebAPI.Tests
             //var result = await controller.GetDevices(new Models.GetDevicesParams { User = "user1", Password="pass1" });
 
             var handler = new RequestHandler(new ModelStorageSQL(), new DocumentDbRepository());
-            var result = await handler.GetDevices(new Models.GetDevicesParams { User = "user1", Password = "pass1" });
+            var result = await handler.GetDevices(new Models.GetDevicesParams { User = "user1", Password = "pass1" }, true);
             Assert.IsTrue(true);
         }
 

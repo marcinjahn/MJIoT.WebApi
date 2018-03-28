@@ -22,11 +22,19 @@ namespace MJIoT_WebAPI.Controllers
         }
 
         [HttpPost]
-        [ActionName("GetDevices")]
-        public async Task<List<DeviceDTO>> GetDevices(GetDevicesParams parameters)
+        [ActionName("GetDevicesWithListeners")]
+        public async Task<List<DeviceWithListenersDTO>> GetDevicesWithListeners(GetDevicesParams parameters)
         {
             //var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
-            return await _handler.GetDevices(parameters);
+            return await _handler.GetDevices(parameters, true);
+        }
+
+        [HttpPost]
+        [ActionName("GetDevices")]
+        public async Task<List<DeviceWithListenersDTO>> GetDevices(GetDevicesParams parameters)
+        {
+            //var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
+            return await _handler.GetDevices(parameters, false);
         }
 
         [HttpPost]

@@ -13,7 +13,7 @@ namespace MJIoT_WebAPI.Models
     //    public List<DeviceDTO> Devices { get; set; }
     //}
 
-    public class DeviceDTO
+    public class DeviceWithListenersDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }

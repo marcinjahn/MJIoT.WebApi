@@ -34,18 +34,18 @@ namespace MJIoT_WebAPI.Helpers
 
             return userId;
         }
-   
-        public async Task<List<DeviceDTO>> GetDevices(GetDevicesParams parameters)
+
+        public async Task<List<DeviceWithListenersDTO>> GetDevices(GetDevicesParams parameters, bool includeListeners)
         {
             var userId = DoUserCheck(parameters.User, parameters.Password);
             var devices = _modelStorage.GetDevicesOfUser(userId);
 
             iotHubServices = new IoTHubService();
 
-            List<DeviceDTO> result = new List<DeviceDTO>();
+            List<DeviceWithListenersDTO> result = new List<DeviceWithListenersDTO>();
             foreach (var device in devices)
             {
-                DeviceDTO deviceData = await GetDeviceDTO(device);
+                DeviceWithListenersDTO deviceData = await GetDeviceDTO(device, includeListeners);
                 result.Add(deviceData);
             }
 
@@ -100,17 +100,16 @@ namespace MJIoT_WebAPI.Helpers
 
         }
 
-
-        private async Task<DeviceDTO> GetDeviceDTO(MJIoT_DBModel.Device device)
+        private async Task<DeviceWithListenersDTO> GetDeviceDTO(MJIoT_DBModel.Device device, bool includeListeners)
         {
             //var name = _modelStorage.GetDeviceName(device);
             var name = await _propertyStorage.GetPropertyValueAsync(device.Id, "Name");
             var isConnected = await iotHubServices.IsDeviceOnline(device.Id.ToString());
             var deviceRole = _modelStorage.GetDeviceRole(device);
             var type = device.DeviceType.Name;
-            var connectedListeners = GenerateListenersData(device);
+            var connectedListeners =  includeListeners ? GenerateListenersData(device) : null;
 
-            var item = new DeviceDTO
+            var item = new DeviceWithListenersDTO
             {
                 Id = device.Id,
                 Name = name,
