@@ -72,5 +72,25 @@ namespace MJIoT_WebAPI.Helpers
                 .ToList();
         }
 
+        public List<PropertyType> GetPropertiesOfDevice(int deviceId)
+        {
+            var type = GetDeviceType(deviceId);
+            var properties = _context.PropertyTypes
+                .Include(n => n.DeviceType)
+                .Where(n => n.DeviceType.Id == type.Id)
+                .ToList();
+
+            return properties;
+        }
+
+        private DeviceType GetDeviceType(int deviceId)
+        {
+            return _context.Devices
+                .Include(n => n.DeviceType)
+                .Where(n => n.Id == deviceId)
+                .Select(n => n.DeviceType)
+                .FirstOrDefault();
+        }
+
     }
 }

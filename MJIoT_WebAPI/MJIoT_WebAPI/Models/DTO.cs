@@ -17,6 +17,7 @@ namespace MJIoT_WebAPI.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string DeviceType { get; set; }
         public DeviceRole CommunicationType { get; set; }  //sender lub listener lub bi-directional
         public bool IsConnected { get; set; }
         public List<PropertyListenersInfo> ConnectedListeners { get; set; } //zawiera nazwy urządzeń
@@ -35,6 +36,8 @@ namespace MJIoT_WebAPI.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public bool IsConfigurable { get; set; }
-        public string Value { get; set; }
+        public string PropertyValue { get; set; }
+        public bool IsListenerProperty { get; set; }
+        public bool IsSenderProperty { get; set; }
     }
 }

@@ -25,9 +25,18 @@ namespace MJIoT_WebAPI.Controllers
         [ActionName("GetDevices")]
         public async Task<List<DeviceDTO>> GetDevices(GetDevicesParams parameters)
         {
-            var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
+            //var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
             return await _handler.GetDevices(parameters);
         }
+
+        [HttpPost]
+        [ActionName("GetProperties")]
+        public async Task<List<PropertyDTO>> GetProperties(GetPropertiesParams parameters)
+        {
+            var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
+            return await _handler.GetProperties(parameters);
+        }
+
 
         //Sets listeners overwriting the previous set of listeners. Therefore the invoker should supply ALL listeners - newly added and previous ones that should stay.
         //listeners is a list of IDs.
@@ -109,41 +118,6 @@ namespace MJIoT_WebAPI.Controllers
         //        context.SaveChanges();
         //    }
         //    return new HttpResponseMessage(HttpStatusCode.OK);
-        //}
-
-        //[HttpPost]
-        //[ActionName("GetProperties")]
-        //public List<PropertyDTO> GetProperties(GetPropertiesParams parameters)
-        //{
-        //    var userCheck = Helper.CheckUser(parameters.User, parameters.Password);
-
-        //    if (userCheck == null)
-        //    {
-        //        HttpResponseMessage message = new HttpResponseMessage(HttpStatusCode.Unauthorized)
-        //        {
-        //            Content = new StringContent(BadUserMessage)
-        //        };
-        //        throw new HttpResponseException(message);
-        //    }
-
-        //    List<PropertyDTO> result = new List<PropertyDTO>();
-
-        //    using (var context = new MJIoTDBContext())
-        //    {
-        //        result = context.DeviceProperties
-        //            .Include("Device").Include("PropertyType")
-        //            .Where(n => n.Device.Id == parameters.DeviceId)
-        //            .Select(n => new PropertyDTO
-        //                {
-        //                    Id = n.Id,
-        //                    Value = n.Value,
-        //                    Name = n.PropertyType.Name,
-        //                    IsConfigurable = n.PropertyType.UIConfigurable
-        //                })
-        //            .ToList();
-        //    }
-
-        //    return result;
         //}
     }
 }

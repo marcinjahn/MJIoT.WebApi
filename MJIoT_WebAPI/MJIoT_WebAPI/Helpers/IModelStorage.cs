@@ -11,5 +11,6 @@ namespace MJIoT_WebAPI.Helpers
         List<MJIoT_DBModel.Device> GetDevicesOfUser(int? userId);
         DeviceRole GetDeviceRole(MJIoT_DBModel.Device device);
         List<Connection> GetConnections(Device device);
+        List<PropertyType> GetPropertiesOfDevice(int deviceId);
     }
 }

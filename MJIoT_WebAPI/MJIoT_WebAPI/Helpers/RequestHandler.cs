@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using MJIoT.Storage.PropertyValues;
+using System;
 
 namespace MJIoT_WebAPI.Helpers
 {
@@ -49,7 +50,56 @@ namespace MJIoT_WebAPI.Helpers
             }
 
             return result;
-        }    
+        }
+
+        public async Task<List<PropertyDTO>> GetProperties(GetPropertiesParams parameters)
+        {
+            var properties = _modelStorage.GetPropertiesOfDevice(int.Parse(parameters.DeviceId));
+
+            List<PropertyDTO> result = new List<PropertyDTO>();
+            foreach (var property in properties)
+            {
+                result.Add(new PropertyDTO
+                {
+                    Id = property.Id,
+                    IsConfigurable = property.UIConfigurable,
+                    Name = property.Name,
+                    IsListenerProperty = property.IsListenerProperty,
+                    IsSenderProperty = property.IsSenderProperty
+                });
+            }
+
+
+            List<Task> tasks = new List<Task>();
+            foreach (var entry in result)
+            {
+                tasks.Add(
+                    Task.Run(async () =>
+                    {
+                        entry.PropertyValue =
+                        await _propertyStorage.GetPropertyValueAsync(
+                            int.Parse(parameters.DeviceId),
+                            entry.Name);
+                    })
+                );
+            }
+            await Task.WhenAll(tasks);
+
+            return result;
+
+            //List<Task<string>> valuesTasks = new List<Task<string>>();
+            //foreach (var property in properties)
+            //{
+            //    valuesTasks.Add(
+            //        _propertyStorage.GetPropertyValueAsync(
+            //            parameters.DeviceId, 
+            //            property.Name)
+            //    );
+            //}
+
+
+        }
+
 
         private async Task<DeviceDTO> GetDeviceDTO(MJIoT_DBModel.Device device)
         {
@@ -57,13 +107,14 @@ namespace MJIoT_WebAPI.Helpers
             var name = await _propertyStorage.GetPropertyValueAsync(device.Id, "Name");
             var isConnected = await iotHubServices.IsDeviceOnline(device.Id.ToString());
             var deviceRole = _modelStorage.GetDeviceRole(device);
-
+            var type = device.DeviceType.Name;
             var connectedListeners = GenerateListenersData(device);
 
             var item = new DeviceDTO
             {
                 Id = device.Id,
                 Name = name,
+                DeviceType = type,
                 CommunicationType = deviceRole,
                 IsConnected = isConnected,
                 ConnectedListeners = connectedListeners

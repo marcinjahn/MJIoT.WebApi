@@ -16,6 +16,14 @@ namespace MJIoT_WebAPI.Tests
     [TestClass]
     public class TestDevicesController
     {
+        [TestMethod]
+        public async Task GetPropertiesTest()
+        {
+            var handler = new RequestHandler(new ModelStorageSQL(), new DocumentDbRepository());
+            var result = await handler.GetProperties(new Models.GetPropertiesParams { User = "user1", Password = "pass1", DeviceId = "18" });
+
+            Assert.IsTrue(true);
+        }
 
         [TestMethod]
         public async Task GetAllDevicesForUser()
