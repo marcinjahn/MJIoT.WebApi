@@ -67,7 +67,7 @@
       <HintPath>..\..\..\mjiot_dbmodel\MJIoT_DBModel\MJIoT_DBModel\bin\Debug\MJIoT_DBModel.dll</HintPath>
     </Reference>
     <Reference Include="MJIoT_ModelStorage">
-      <HintPath>..\..\..\..\..\..\source\repos\MJIoT_Storage\MJIoT_ModelStorage\bin\Debug\MJIoT_ModelStorage.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\source\repos\MJIoT_ModelStorage\MJIoT_ModelStorage\bin\Debug\MJIoT_ModelStorage.dll</HintPath>
     </Reference>
     <Reference Include="MJIoT_PropertyDataStorage">
       <HintPath>..\..\..\..\..\..\source\repos\MJIoT_PropertyDataStorage\MJIoT_PropertyDataStorage\bin\Debug\MJIoT_PropertyDataStorage.dll</HintPath>

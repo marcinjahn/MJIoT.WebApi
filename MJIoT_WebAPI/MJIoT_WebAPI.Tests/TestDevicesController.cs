@@ -11,12 +11,45 @@ using MJIoT_DBModel;
 
 using MJIoT.Storage.PropertyValues;
 using MJIoT.Storage.Models;
+using MJIoT_WebAPI.Models;
 
 namespace MJIoT_WebAPI.Tests
 {
     [TestClass]
     public class TestDevicesController
     {
+        [TestMethod]
+        public void SetListenersTest()
+        {
+            var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
+
+            var parameters = new SetListenersParams
+            {
+                SenderId = 7,
+                SenderPropertyId = 5,
+                Listeners = new List<ListenerData>
+                {
+                    new ListenerData
+                    {
+                        DeviceId = 8,
+                        PropertyId = 3,
+                        Condition = ConnectionConditionTypes.NoCondition,
+                        ConditionValue = null
+                    },
+                    new ListenerData
+                    {
+                        DeviceId = 16,
+                        PropertyId = 6,
+                        Condition = ConnectionConditionTypes.NoCondition,
+                        ConditionValue = null,
+                    }
+                },
+                User = "user1",
+                Password = "pass1"
+            };
+            handler.SetListeners(parameters);
+        }
+
         [TestMethod]
         public void Test1()
         {

@@ -22,7 +22,7 @@ namespace MJIoT_WebAPI.Controllers
             _handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
         }
 
-        [HttpPost]
+        [HttpPost] 
         [ActionName("GetDevicesWithListeners")]
         public async Task<List<DeviceWithListenersDTO>> GetDevicesWithListeners(GetDevicesParams parameters)
         {
@@ -44,6 +44,16 @@ namespace MJIoT_WebAPI.Controllers
         {
             var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
             return await _handler.GetProperties(parameters);
+        }
+
+        [HttpPost]
+        [ActionName("SetListeners")]
+        public IHttpActionResult SetListeners(SetListenersParams parameters)
+        {
+            var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
+            _handler.SetListeners(parameters);
+
+            return Ok();
         }
 
 

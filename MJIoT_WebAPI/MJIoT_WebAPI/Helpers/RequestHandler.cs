@@ -103,6 +103,26 @@ namespace MJIoT_WebAPI.Helpers
 
         }
 
+        public void SetListeners(SetListenersParams parameters)
+        {
+            _unitOfWork.Connections.RemoveAll();
+
+            foreach (var listener in parameters.Listeners)
+            {
+                _unitOfWork.Connections.Add(new Connection
+                {
+                    SenderDevice = _unitOfWork.Devices.Get(parameters.SenderId),
+                    SenderProperty = _unitOfWork.PropertyTypes.Get(parameters.SenderPropertyId),
+                    ListenerDevice = _unitOfWork.Devices.Get(listener.DeviceId),
+                    ListenerProperty = _unitOfWork.PropertyTypes.Get(listener.PropertyId),
+                    Condition = listener.Condition,
+                    ContitionValue = listener.ConditionValue
+                });
+            }
+
+            _unitOfWork.Save();
+        }
+
         private async Task<DeviceWithListenersDTO> GetDeviceDTO(MJIoT_DBModel.Device device, bool includeListeners)
         {
             //var name = _modelStorage.GetDeviceName(device);
