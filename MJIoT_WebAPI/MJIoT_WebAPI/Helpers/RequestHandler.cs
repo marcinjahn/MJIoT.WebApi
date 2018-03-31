@@ -103,24 +103,64 @@ namespace MJIoT_WebAPI.Helpers
 
         }
 
-        public void SetListeners(SetListenersParams parameters)
+        public void SetListeners(ConfigureListenersParams parameters)
         {
             _unitOfWork.Connections.RemoveAll();
 
+            AddListeners(parameters);
+        }
+
+        public void AddListeners(ConfigureListenersParams parameters)
+        {
             foreach (var listener in parameters.Listeners)
-            {
-                _unitOfWork.Connections.Add(new Connection
-                {
-                    SenderDevice = _unitOfWork.Devices.Get(parameters.SenderId),
-                    SenderProperty = _unitOfWork.PropertyTypes.Get(parameters.SenderPropertyId),
-                    ListenerDevice = _unitOfWork.Devices.Get(listener.DeviceId),
-                    ListenerProperty = _unitOfWork.PropertyTypes.Get(listener.PropertyId),
-                    Condition = listener.Condition,
-                    ContitionValue = listener.ConditionValue
-                });
-            }
+                _unitOfWork.Connections.Add(CreateConnectionObject(parameters, listener));
 
             _unitOfWork.Save();
+        }
+
+        public void RemoveListeners(ConfigureListenersParams parameters)
+        {
+            var senderDevice = _unitOfWork.Devices.Get(parameters.SenderId);
+            var connections = _unitOfWork.Connections.GetDeviceConnections(senderDevice);
+
+            var connectionsToRemove = connections
+                .Where(n =>
+                {
+                    return (
+                        parameters.Listeners
+                            .Select(b => b.DeviceId)
+                            .Contains(n.ListenerDevice.Id)
+                        &&
+                        parameters.Listeners
+                            .Select(b => b.PropertyId)
+                            .Contains(n.ListenerProperty.Id)
+                        &&
+                        parameters.Listeners
+                            .Select(b => (int)b.Condition)
+                            .Contains((int)n.Condition)
+                        &&
+                        parameters.Listeners
+                            .Select(b => b.ConditionValue)
+                            .Contains(n.ConditionValue)
+                    );
+                })
+                .ToList();
+
+            _unitOfWork.Connections.RemoveRange(connectionsToRemove);
+            _unitOfWork.Save();
+        }
+
+        private Connection CreateConnectionObject(ConfigureListenersParams parameters, ListenerData listenerData)
+        {
+            return new Connection
+            {
+                SenderDevice = _unitOfWork.Devices.Get(parameters.SenderId),
+                SenderProperty = _unitOfWork.PropertyTypes.Get(parameters.SenderPropertyId),
+                ListenerDevice = _unitOfWork.Devices.Get(listenerData.DeviceId),
+                ListenerProperty = _unitOfWork.PropertyTypes.Get(listenerData.PropertyId),
+                Condition = listenerData.Condition,
+                ConditionValue = listenerData.ConditionValue
+            };
         }
 
         private async Task<DeviceWithListenersDTO> GetDeviceDTO(MJIoT_DBModel.Device device, bool includeListeners)
@@ -177,7 +217,7 @@ namespace MJIoT_WebAPI.Helpers
                         PropertyName = connection.ListenerProperty.Name,
                         DeviceId = connection.ListenerDevice.Id.ToString(),
                         Condition = connection.Condition,
-                        ConditionValue = connection.ContitionValue
+                        ConditionValue = connection.ConditionValue
                     }
                 );
             }

@@ -48,10 +48,30 @@ namespace MJIoT_WebAPI.Controllers
 
         [HttpPost]
         [ActionName("SetListeners")]
-        public IHttpActionResult SetListeners(SetListenersParams parameters)
+        public IHttpActionResult SetListeners(ConfigureListenersParams parameters)
         {
             var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
             _handler.SetListeners(parameters);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [ActionName("AddListeners")]
+        public IHttpActionResult AddListeners(ConfigureListenersParams parameters)
+        {
+            var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
+            _handler.AddListeners(parameters);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [ActionName("RemoveListeners")]
+        public IHttpActionResult RemoveListeners(ConfigureListenersParams parameters)
+        {
+            var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
+            _handler.RemoveListeners(parameters);
 
             return Ok();
         }

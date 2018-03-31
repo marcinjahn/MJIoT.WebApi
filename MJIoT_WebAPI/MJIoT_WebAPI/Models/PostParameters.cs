@@ -20,22 +20,9 @@ namespace MJIoT_WebAPI.Models
     {
     }
 
-    public class AddListenerParams : UserParams
-    {
-        public int SenderDeviceId { get; set; }
-        public int SenderPropertyId { get; set; }
-        public int ListenerDeviceId { get; set; }
-        public int ListenePropertyId { get; set; }
 
-        public ConnectionConditionTypes Condition { get; set; }
-        public string CinditionValue { get; set; }
-    }
 
-    public class RemoveListenerData : AddListenerParams
-    {
-    }
-
-    public class SetListenersParams : UserParams
+    public class ConfigureListenersParams : UserParams
     {
         public int SenderId { get; set; }
         public int SenderPropertyId { get; set; }

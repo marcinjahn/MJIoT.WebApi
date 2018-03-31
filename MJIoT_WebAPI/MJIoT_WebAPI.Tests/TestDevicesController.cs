@@ -19,11 +19,37 @@ namespace MJIoT_WebAPI.Tests
     public class TestDevicesController
     {
         [TestMethod]
+        public void RemoveListenersTest()
+        {
+            var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
+
+            var parameters = new ConfigureListenersParams
+            {
+                SenderId = 7,
+                SenderPropertyId = 5,
+                Listeners = new List<ListenerData>
+                {
+                    new ListenerData
+                    {
+                        DeviceId = 16,
+                        PropertyId = 6,
+                        Condition = ConnectionConditionTypes.NoCondition,
+                        ConditionValue = null,
+                    }
+                },
+                User = "user1",
+                Password = "pass1"
+            };
+            handler.RemoveListeners(parameters);
+        }
+
+        [TestMethod]
+        [Ignore]
         public void SetListenersTest()
         {
             var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
 
-            var parameters = new SetListenersParams
+            var parameters = new ConfigureListenersParams
             {
                 SenderId = 7,
                 SenderPropertyId = 5,
