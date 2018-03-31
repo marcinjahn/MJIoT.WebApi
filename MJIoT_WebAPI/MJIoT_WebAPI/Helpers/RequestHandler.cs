@@ -8,39 +8,40 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using MJIoT.Storage.PropertyValues;
 using System;
+using MJIoT.Storage.Models;
 
 namespace MJIoT_WebAPI.Helpers
 {
     public class RequestHandler
     {
         IPropertyValuesStorage _propertyStorage;
-        IModelStorage _modelStorage;
-        IoTHubService iotHubServices;
+        IUnitOfWork _unitOfWork;
+        IoTHubDeviceAvailabilityService iotHubServices;
 
         string BadUserMessage = "You do not have access to MJ IoT System! (User not recognized)";
         string PropertyNonExistentMessage = "This property does not exist in the system nad cannot be changed!";
 
-        public RequestHandler(IModelStorage modelStorage, IPropertyValuesStorage propertyStorage)
+        public RequestHandler(IUnitOfWork unitOfWork, IPropertyValuesStorage propertyStorage)
         {
-            _modelStorage = modelStorage;
+            _unitOfWork = unitOfWork;
             _propertyStorage = propertyStorage;
         }
 
-        public int? DoUserCheck(string login, string password)
+        public User DoUserCheck(string login, string password)
         {
-            var userId = _modelStorage.GetUserId(login, password);
-            if (userId == null)
+            var user = _unitOfWork.Users.Get(login, password);
+            if (user == null)
                 ThrowUnauthorizedResponse();
 
-            return userId;
+            return user;
         }
 
         public async Task<List<DeviceWithListenersDTO>> GetDevices(GetDevicesParams parameters, bool includeListeners)
         {
-            var userId = DoUserCheck(parameters.User, parameters.Password);
-            var devices = _modelStorage.GetDevicesOfUser(userId);
+            var user = DoUserCheck(parameters.User, parameters.Password);
+            var devices = _unitOfWork.Devices.GetDevicesOfUser(user.Id);
 
-            iotHubServices = new IoTHubService();
+            iotHubServices = new IoTHubDeviceAvailabilityService();
 
             List<DeviceWithListenersDTO> result = new List<DeviceWithListenersDTO>();
             foreach (var device in devices)
@@ -54,7 +55,9 @@ namespace MJIoT_WebAPI.Helpers
 
         public async Task<List<PropertyDTO>> GetProperties(GetPropertiesParams parameters)
         {
-            var properties = _modelStorage.GetPropertiesOfDevice(int.Parse(parameters.DeviceId));
+            var deviceId = int.Parse(parameters.DeviceId);
+            var deviceType = _unitOfWork.Devices.GetDeviceType(deviceId);
+            var properties = _unitOfWork.PropertyTypes.GetPropertiesOfDevice(deviceType);
 
             List<PropertyDTO> result = new List<PropertyDTO>();
             foreach (var property in properties)
@@ -105,7 +108,7 @@ namespace MJIoT_WebAPI.Helpers
             //var name = _modelStorage.GetDeviceName(device);
             var name = await _propertyStorage.GetPropertyValueAsync(device.Id, "Name");
             var isConnected = await iotHubServices.IsDeviceOnline(device.Id.ToString());
-            var deviceRole = _modelStorage.GetDeviceRole(device);
+            var deviceRole = _unitOfWork.Devices.GetDeviceRole(device);
             var type = device.DeviceType.Name;
             var connectedListeners =  includeListeners ? GenerateListenersData(device) : null;
 
@@ -124,7 +127,7 @@ namespace MJIoT_WebAPI.Helpers
 
         private List<PropertyListenersInfo> GenerateListenersData(MJIoT_DBModel.Device device)
         {
-            var connections = _modelStorage.GetConnections(device);
+            var connections = _unitOfWork.Connections.GetDeviceConnections(device);
             var connectionGroups = connections
                 .GroupBy(n => n.SenderProperty.Name);
 

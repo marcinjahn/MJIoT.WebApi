@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using MJIoT_WebAPI.Helpers;
 
 using MJIoT.Storage.PropertyValues;
+using MJIoT.Storage.Models;
 
 namespace MJIoT_WebAPI.Controllers
 {
@@ -18,7 +19,7 @@ namespace MJIoT_WebAPI.Controllers
 
         public DevicesController()
         {
-            _handler = new RequestHandler(new ModelStorageSQL(), new DocumentDbRepository());
+            _handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
         }
 
         [HttpPost]

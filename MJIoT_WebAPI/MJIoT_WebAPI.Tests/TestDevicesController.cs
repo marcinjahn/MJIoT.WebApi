@@ -10,6 +10,7 @@ using MJIoT_WebAPI.Helpers;
 using MJIoT_DBModel;
 
 using MJIoT.Storage.PropertyValues;
+using MJIoT.Storage.Models;
 
 namespace MJIoT_WebAPI.Tests
 {
@@ -17,9 +18,19 @@ namespace MJIoT_WebAPI.Tests
     public class TestDevicesController
     {
         [TestMethod]
+        public void Test1()
+        {
+            var unitOfWork = new UnitOfWork();
+
+            var test = unitOfWork.Devices.Get(7);
+
+            Assert.IsTrue(true);
+        }
+
+        [TestMethod]
         public async Task GetPropertiesTest()
         {
-            var handler = new RequestHandler(new ModelStorageSQL(), new DocumentDbRepository());
+            var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
             var result = await handler.GetProperties(new Models.GetPropertiesParams { User = "user1", Password = "pass1", DeviceId = "18" });
 
             Assert.IsTrue(true);
@@ -32,7 +43,7 @@ namespace MJIoT_WebAPI.Tests
 
             //var result = await controller.GetDevices(new Models.GetDevicesParams { User = "user1", Password="pass1" });
 
-            var handler = new RequestHandler(new ModelStorageSQL(), new DocumentDbRepository());
+            var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
             var result = await handler.GetDevices(new Models.GetDevicesParams { User = "user1", Password = "pass1" }, true);
             Assert.IsTrue(true);
         }
@@ -43,7 +54,7 @@ namespace MJIoT_WebAPI.Tests
             var context = new MJIoTDBContext();
             var device = context.Devices.Where(n => n.Id == 7).FirstOrDefault();
 
-            var handler = new RequestHandler(new ModelStorageSQL(), new DocumentDbRepository());
+            var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
 
             PrivateObject obj = new PrivateObject(handler);
             obj.Invoke("GenerateListenersData", device);

@@ -1,4 +1,5 @@
-﻿using MJIoT_WebAPI.Helpers;
+﻿using MJIoT.Storage.Models.Enums;
+using MJIoT_WebAPI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

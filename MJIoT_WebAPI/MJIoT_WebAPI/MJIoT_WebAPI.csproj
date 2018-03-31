@@ -71,6 +71,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\mjiot_dbmodel\MJIoT_DBModel\MJIoT_DBModel\bin\Debug\MJIoT_DBModel.dll</HintPath>
     </Reference>
+    <Reference Include="MJIoT_ModelStorage">
+      <HintPath>..\..\..\..\..\..\source\repos\MJIoT_Storage\MJIoT_ModelStorage\bin\Debug\MJIoT_ModelStorage.dll</HintPath>
+    </Reference>
     <Reference Include="MJIoT_PropertyDataStorage">
       <HintPath>..\..\..\..\..\..\source\repos\MJIoT_PropertyDataStorage\MJIoT_PropertyDataStorage\bin\Debug\MJIoT_PropertyDataStorage.dll</HintPath>
     </Reference>
@@ -160,7 +163,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Enums\DeviceCommunicationType.cs" />
     <Compile Include="Helpers\IDevicesAvailabilityService.cs" />
     <Compile Include="Helpers\IModelStorage.cs" />
     <Compile Include="Helpers\IoTHubServices.cs" />

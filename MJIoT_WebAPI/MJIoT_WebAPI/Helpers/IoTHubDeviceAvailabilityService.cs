@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 namespace MJIoT_WebAPI.Helpers
 {
 
-    public class IoTHubService : IDevicesAvailabilityService
+    public class IoTHubDeviceAvailabilityService : IDevicesAvailabilityService
     {
         ServiceClient _serviceClient;
         string connectionString = "HostName=MJIoT-Hub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=SzQKdF1y6bAEgGfZei2bmq1Jd83odc+B2x197n2MtxA=";
 
-        public IoTHubService()
+        public IoTHubDeviceAvailabilityService()
         {
             _serviceClient = ServiceClient.CreateFromConnectionString(connectionString);
         }
