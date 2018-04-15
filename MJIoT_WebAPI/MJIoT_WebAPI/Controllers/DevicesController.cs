@@ -13,6 +13,7 @@ using MJIoT.Storage.Models;
 
 namespace MJIoT_WebAPI.Controllers
 {
+    //[Authorize]
     public class DevicesController : ApiController
     {
         private RequestHandler _handler;
@@ -27,7 +28,7 @@ namespace MJIoT_WebAPI.Controllers
         public async Task<List<DeviceWithListenersDTO>> GetDevicesWithListeners(GetDevicesParams parameters)
         {
             //var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
-            return await _handler.GetDevices(parameters, true);
+            return await _handler.GetDevices(GetUserId(), true);
         }
 
         [HttpPost]
@@ -35,23 +36,21 @@ namespace MJIoT_WebAPI.Controllers
         public async Task<List<DeviceWithListenersDTO>> GetDevices(GetDevicesParams parameters)
         {
             //var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
-            return await _handler.GetDevices(parameters, false);
+            return await _handler.GetDevices(GetUserId(), false);
         }
 
         [HttpPost]
         [ActionName("GetProperties")]
         public async Task<List<PropertyDTO>> GetProperties(GetPropertiesParams parameters)
         {
-            var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
-            return await _handler.GetProperties(parameters);
+            return await _handler.GetProperties(GetUserId(), parameters);
         }
 
         [HttpPost]
         [ActionName("SetListeners")]
         public IHttpActionResult SetListeners(ConfigureListenersParams parameters)
         {
-            var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
-            _handler.SetListeners(parameters);
+            _handler.SetListeners(GetUserId(), parameters);
 
             return Ok();
         }
@@ -60,8 +59,7 @@ namespace MJIoT_WebAPI.Controllers
         [ActionName("AddListeners")]
         public IHttpActionResult AddListeners(ConfigureListenersParams parameters)
         {
-            var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
-            _handler.AddListeners(parameters);
+            _handler.AddListeners(GetUserId(), parameters);
 
             return Ok();
         }
@@ -70,57 +68,15 @@ namespace MJIoT_WebAPI.Controllers
         [ActionName("RemoveListeners")]
         public IHttpActionResult RemoveListeners(ConfigureListenersParams parameters)
         {
-            var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
-            _handler.RemoveListeners(parameters);
+            _handler.RemoveListeners(GetUserId(), parameters);
 
             return Ok();
         }
 
-
-        //Sets listeners overwriting the previous set of listeners. Therefore the invoker should supply ALL listeners - newly added and previous ones that should stay.
-        //listeners is a list of IDs.
-        //[HttpPost]
-        //[ActionName("SetListeners")]
-        //public HttpResponseMessage SetListeners(SetListenersParams parameters)
-        //{
-        //    var userCheck = Helper.CheckUser(parameters.User, parameters.Password);
-
-        //    if (userCheck == null)
-        //    {
-        //        HttpResponseMessage message = new HttpResponseMessage(HttpStatusCode.Unauthorized)
-        //        {
-        //            Content = new StringContent(BadUserMessage)
-        //        };
-        //        throw new HttpResponseException(message);
-        //    }
-
-        //    using (var context = new MJIoTDBContext())
-        //    {
-        //        var sender = context.Devices
-        //            .Include("ListenerDevices").Include("User")
-        //            .Where(n => n.Id == parameters.SenderId && n.User.Id == userCheck)
-        //            .FirstOrDefault();
-
-        //        List<MJIoT_DBModel.Device> newListeners = new List<MJIoT_DBModel.Device>();
-
-        //        if (parameters.Listeners != null) //Only iterate if list is not empty
-        //        {
-        //            foreach (var listener in parameters.Listeners)
-        //            {
-        //                var newListener = context.Devices
-        //                    .Where(n => n.Id == listener)
-        //                    .FirstOrDefault();
-
-        //                newListeners.Add(newListener);
-        //            }
-        //        }
-
-        //        //sender.ListenerDevices = newListeners;
-        //        context.SaveChanges();
-        //    }
-
-        //    return new HttpResponseMessage(HttpStatusCode.OK);
-        //}
+        private int GetUserId()
+        {
+            return int.Parse(Request.Properties["userId"].ToString());
+        }
 
         //[HttpPost]
         //[ActionName("SetProperty")]

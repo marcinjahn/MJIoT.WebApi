@@ -19,7 +19,7 @@ namespace MJIoT_WebAPI.Helpers
         IoTHubDeviceAvailabilityService iotHubServices;
 
         string BadUserMessage = "You do not have access to MJ IoT System! (User not recognized)";
-        string PropertyNonExistentMessage = "This property does not exist in the system nad cannot be changed!";
+        //string PropertyNonExistentMessage = "This property does not exist in the system nad cannot be changed!";
 
         public RequestHandler(IUnitOfWork unitOfWork, IPropertyValuesStorage propertyStorage)
         {
@@ -36,10 +36,10 @@ namespace MJIoT_WebAPI.Helpers
             return user;
         }
 
-        public async Task<List<DeviceWithListenersDTO>> GetDevices(GetDevicesParams parameters, bool includeListeners)
+        public async Task<List<DeviceWithListenersDTO>> GetDevices(int userId, bool includeListeners)
         {
-            var user = DoUserCheck(parameters.User, parameters.Password);
-            var devices = _unitOfWork.Devices.GetDevicesOfUser(user.Id);
+            //var user = DoUserCheck(parameters.User, parameters.Password);
+            var devices = _unitOfWork.Devices.GetDevicesOfUser(userId);
 
             iotHubServices = new IoTHubDeviceAvailabilityService();
 
@@ -53,7 +53,7 @@ namespace MJIoT_WebAPI.Helpers
             return result;
         }
 
-        public async Task<List<PropertyDTO>> GetProperties(GetPropertiesParams parameters)
+        public async Task<List<PropertyDTO>> GetProperties(int userId, GetPropertiesParams parameters)
         {
             var deviceId = int.Parse(parameters.DeviceId);
             var deviceType = _unitOfWork.Devices.GetDeviceType(deviceId);
@@ -103,14 +103,14 @@ namespace MJIoT_WebAPI.Helpers
 
         }
 
-        public void SetListeners(ConfigureListenersParams parameters)
+        public void SetListeners(int userId, ConfigureListenersParams parameters)
         {
             _unitOfWork.Connections.RemoveAll();
 
-            AddListeners(parameters);
+            AddListeners(userId, parameters);
         }
 
-        public void AddListeners(ConfigureListenersParams parameters)
+        public void AddListeners(int userId, ConfigureListenersParams parameters)
         {
             foreach (var listener in parameters.Listeners)
                 _unitOfWork.Connections.Add(CreateConnectionObject(parameters, listener));
@@ -118,7 +118,7 @@ namespace MJIoT_WebAPI.Helpers
             _unitOfWork.Save();
         }
 
-        public void RemoveListeners(ConfigureListenersParams parameters)
+        public void RemoveListeners(int userId, ConfigureListenersParams parameters)
         {
             var senderDevice = _unitOfWork.Devices.Get(parameters.SenderId);
             var connections = _unitOfWork.Connections.GetDeviceConnections(senderDevice);

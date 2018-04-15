@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MJIoT_WebAPI.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -13,6 +14,8 @@ namespace MJIoT_WebAPI
 
             // Web API routes
             config.MapHttpAttributeRoutes();
+
+            config.MessageHandlers.Add(new TokenValidator());
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

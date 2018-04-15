@@ -12,31 +12,31 @@ namespace MJIoT_WebAPI.Models
         public string Password { get; set; }
     }
 
-    public class CheckUserParams : UserParams
+    public class CheckUserParams
     {
     }
 
-    public class GetDevicesParams : UserParams
+    public class GetDevicesParams
     {
     }
 
 
 
-    public class ConfigureListenersParams : UserParams
+    public class ConfigureListenersParams
     {
         public int SenderId { get; set; }
         public int SenderPropertyId { get; set; }
         public IEnumerable<ListenerData> Listeners { get; set; }
     }
 
-    public class SetPropertyParams : UserParams
+    public class SetPropertyParams
     {
         public string DeviceId { get; set; }
         public string PropertyId { get; set; }
         public string Value { get; set; }
     }
 
-    public class GetPropertiesParams : UserParams
+    public class GetPropertiesParams
     {
         public string DeviceId { get; set; }
     }
