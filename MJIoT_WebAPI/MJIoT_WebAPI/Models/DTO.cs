@@ -1,4 +1,5 @@
 ﻿using MJIoT.Storage.Models.Enums;
+using MJIoT_DBModel;
 using MJIoT_WebAPI.Helpers;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,6 @@ using System.Web;
 namespace MJIoT_WebAPI.Models
 {
 
-    //informacja na temat urządzeń przesyłana do aplikacji mobilnej
-    //public class DevicesDTO
-    //{
-    //    public List<DeviceDTO> Devices { get; set; }
-    //}
-
     public class DeviceWithListenersDTO
     {
         public int Id { get; set; }
@@ -21,16 +16,25 @@ namespace MJIoT_WebAPI.Models
         public string DeviceType { get; set; }
         public DeviceRole CommunicationType { get; set; }  //sender lub listener lub bi-directional
         public bool IsConnected { get; set; }
-        public List<PropertyListenersInfo> ConnectedListeners { get; set; } //zawiera nazwy urządzeń
+        public List<PropertyListenersDTO> ConnectedListeners { get; set; } //zawiera nazwy urządzeń
         //public List<string> ConnectedSenders { get; set; } //zawiera nazwy urządzeń   na razie to pomijam
         //przydałby się jeszcze obrazek
     }
 
-    public class ListenerDTO
+    public class SingleListenerDTO
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public string DeviceId { get; set; }
+        public string PropertyName { get; set; }
+        public MJIoT_DBModel.ConnectionConditionTypes Condition { get; set; }
+        public string ConditionValue { get; set; }
     }
+
+    public class PropertyListenersDTO
+    {
+        public string PropertyName { get; set; }
+        public List<SingleListenerDTO> Listeners { get; set; }
+    }
+
 
     public class PropertyDTO
     {

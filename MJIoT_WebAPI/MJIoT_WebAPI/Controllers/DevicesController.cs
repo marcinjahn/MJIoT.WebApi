@@ -65,6 +65,13 @@ namespace MJIoT_WebAPI.Controllers
         }
 
         [HttpPost]
+        [ActionName("GetDeviceListeners")]
+        public List<PropertyListenersDTO> GetListeners(GetDeviceListenersParams parameters)
+        {
+            return _handler.GetDeviceListeners(GetUserId(), int.Parse(parameters.DeviceId)) as List<PropertyListenersDTO>;
+        }
+
+        [HttpPost]
         [ActionName("RemoveListeners")]
         public IHttpActionResult RemoveListeners(ConfigureListenersParams parameters)
         {

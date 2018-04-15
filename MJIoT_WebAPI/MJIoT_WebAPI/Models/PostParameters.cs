@@ -41,6 +41,8 @@ namespace MJIoT_WebAPI.Models
         public string DeviceId { get; set; }
     }
 
+    public class GetDeviceListenersParams : GetPropertiesParams { }
+
 
     public class ListenerData
     {

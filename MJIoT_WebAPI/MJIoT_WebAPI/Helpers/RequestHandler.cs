@@ -103,10 +103,16 @@ namespace MJIoT_WebAPI.Helpers
 
         }
 
+        public IEnumerable<PropertyListenersDTO> GetDeviceListeners(int userId, int deviceId)
+        {
+            var listeners = GenerateListenersData(_unitOfWork.Devices.Get(deviceId));
+            return listeners;
+        }
+
         public void SetListeners(int userId, ConfigureListenersParams parameters)
         {
             _unitOfWork.Connections.RemoveAll();
-
+            _unitOfWork.Save();
             AddListeners(userId, parameters);
         }
 
@@ -198,34 +204,34 @@ namespace MJIoT_WebAPI.Helpers
             return item;
         }
 
-        private List<PropertyListenersInfo> GenerateListenersData(MJIoT_DBModel.Device device)
+        private List<PropertyListenersDTO> GenerateListenersData(MJIoT_DBModel.Device device)
         {
             var connections = _unitOfWork.Connections.GetDeviceConnections(device);
             var connectionGroups = connections
                 .GroupBy(n => n.SenderProperty.Name);
 
-            var result = new List<PropertyListenersInfo>();
+            var result = new List<PropertyListenersDTO>();
             foreach (var group in connectionGroups)
             {
-                PropertyListenersInfo propertyListener = GeneratePropertyListenerInfo(group);
+                PropertyListenersDTO propertyListener = GeneratePropertyListenerInfo(group);
                 result.Add(propertyListener);
             }
 
             return result;
         }
 
-        private PropertyListenersInfo GeneratePropertyListenerInfo(IGrouping<string, Connection> group)
+        private PropertyListenersDTO GeneratePropertyListenerInfo(IGrouping<string, Connection> group)
         {
-            var propertyListener = new PropertyListenersInfo
+            var propertyListener = new PropertyListenersDTO
             {
                 PropertyName = group.Key,
-                Listeners = new List<SingleListenerInfo>()
+                Listeners = new List<SingleListenerDTO>()
             };
 
             foreach (var connection in group)
             {
                 propertyListener.Listeners.Add(
-                    new SingleListenerInfo
+                    new SingleListenerDTO
                     {
                         PropertyName = connection.ListenerProperty.Name,
                         DeviceId = connection.ListenerDevice.Id.ToString(),
