@@ -103,6 +103,16 @@ namespace MJIoT_WebAPI.Helpers
 
         }
 
+        internal PropertyListenersDTO GetPropertyListeners(int userId, GetPropertyListenersParams parameters)
+        {
+            Device device = _unitOfWork.Devices.Get(int.Parse(parameters.DeviceId));
+            var connections = _unitOfWork.Connections.GetDeviceConnections(device)
+                .Where(n => n.SenderProperty.Name == parameters.SenderPropertyName)
+                .ToList();
+
+            return GeneratePropertyListenersDTO(parameters.SenderPropertyName, connections);
+        }
+
         public IEnumerable<PropertyListenersDTO> GetDeviceListeners(int userId, int deviceId)
         {
             var listeners = GenerateListenersData(_unitOfWork.Devices.Get(deviceId));
@@ -213,22 +223,24 @@ namespace MJIoT_WebAPI.Helpers
             var result = new List<PropertyListenersDTO>();
             foreach (var group in connectionGroups)
             {
-                PropertyListenersDTO propertyListener = GeneratePropertyListenerInfo(group);
+                //List<Connection> connections = new List<Connection>();
+
+                PropertyListenersDTO propertyListener = GeneratePropertyListenersDTO(group.Key, group);
                 result.Add(propertyListener);
             }
 
             return result;
         }
 
-        private PropertyListenersDTO GeneratePropertyListenerInfo(IGrouping<string, Connection> group)
+        private PropertyListenersDTO GeneratePropertyListenersDTO(string propertyName, IEnumerable<Connection> connections)
         {
             var propertyListener = new PropertyListenersDTO
             {
-                PropertyName = group.Key,
+                PropertyName = propertyName,
                 Listeners = new List<SingleListenerDTO>()
             };
 
-            foreach (var connection in group)
+            foreach (var connection in connections)
             {
                 propertyListener.Listeners.Add(
                     new SingleListenerDTO

@@ -43,6 +43,11 @@ namespace MJIoT_WebAPI.Models
 
     public class GetDeviceListenersParams : GetPropertiesParams { }
 
+    public class GetPropertyListenersParams : GetDeviceListenersParams
+    {
+        public string SenderPropertyName { get; set; }
+    }
+
 
     public class ListenerData
     {
