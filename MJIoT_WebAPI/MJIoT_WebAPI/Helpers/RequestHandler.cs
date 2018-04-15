@@ -112,10 +112,23 @@ namespace MJIoT_WebAPI.Helpers
 
         public void AddListeners(int userId, ConfigureListenersParams parameters)
         {
-            foreach (var listener in parameters.Listeners)
-                _unitOfWork.Connections.Add(CreateConnectionObject(parameters, listener));
+            foreach (var listener in parameters.Listeners) {
+                var connectionObject = CreateConnectionObject(parameters, listener);
+                if (!IsConnectionAlreadyExsisting(connectionObject))
+                    _unitOfWork.Connections.Add(connectionObject);
+            }
 
             _unitOfWork.Save();
+        }
+
+        private bool IsConnectionAlreadyExsisting(Connection connection)
+        {
+            if (_unitOfWork.Connections.FindDuplicate(connection) != null)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void RemoveListeners(int userId, ConfigureListenersParams parameters)
