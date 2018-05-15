@@ -46,9 +46,11 @@ namespace MJIoT_WebAPI.Helpers
         {
             var devices = _unitOfWork.Devices.GetDevicesOfUser(userId);
 
-            _iotHubServices = new IoTHubDeviceAvailabilityService();
+            if (includeDevicesAvailability)
+                _iotHubServices = new IoTHubDeviceAvailabilityService();
 
             List<DeviceDTO> result = new List<DeviceDTO>();
+
             foreach (var device in devices)
             {
                 DeviceDTO deviceData = await GetDeviceDTO(device, userId, includeListeners, includeDevicesAvailability, includeProperties);
