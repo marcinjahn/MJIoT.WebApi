@@ -36,10 +36,10 @@ namespace MJIoT_WebAPI.Controllers
 
         [HttpGet]
         [ActionName("GetDevices")]
-        public async Task<List<DeviceWithListenersDTO>> GetDevices(bool includeConnections, bool includeAvailability)
+        public async Task<List<DeviceDTO>> GetDevices(bool includeConnections, bool includeAvailability, bool includeProperties)
         {
             //var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
-            return await _handler.GetDevices(GetUserId(), includeConnections, includeAvailability);
+            return await _handler.GetDevices(GetUserId(), includeConnections, includeAvailability, includeProperties);
         }
 
         [HttpGet]

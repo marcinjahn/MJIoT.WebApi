@@ -9,7 +9,7 @@ using System.Web;
 namespace MJIoT_WebAPI.Models.DTOs
 {
 
-    public class DeviceWithListenersDTO
+    public class DeviceDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -17,8 +17,18 @@ namespace MJIoT_WebAPI.Models.DTOs
         public DeviceRole CommunicationType { get; set; }  //sender lub listener lub bi-directional
         public bool? IsConnected { get; set; }
         public List<PropertyListenersDTO> ConnectedListeners { get; set; } //zawiera nazwy urządzeń
-        //public List<string> ConnectedSenders { get; set; } //zawiera nazwy urządzeń   na razie to pomijam
-        //przydałby się jeszcze obrazek
+        public List<PropertyDTO> Properties { get; set; }
+    }
+
+    public class PropertyDTO
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool IsConfigurable { get; set; }
+        //public string PropertyValue { get; set; }
+        public bool IsListenerProperty { get; set; }
+        public bool IsSenderProperty { get; set; }
+        public PropertyFormat Format { get; set; }
     }
 
     public class SingleListenerDTO
@@ -59,14 +69,5 @@ namespace MJIoT_WebAPI.Models.DTOs
     }
 
 
-    public class PropertyDTO
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public bool IsConfigurable { get; set; }
-        //public string PropertyValue { get; set; }
-        public bool IsListenerProperty { get; set; }
-        public bool IsSenderProperty { get; set; }
-        public PropertyFormat Format { get; set; }
-    }
+
 }
