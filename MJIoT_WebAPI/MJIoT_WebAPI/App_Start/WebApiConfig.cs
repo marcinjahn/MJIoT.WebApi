@@ -11,6 +11,7 @@ namespace MJIoT_WebAPI
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
+            config.EnableCors();  //added by me to enable CORS
 
             // Web API routes
             config.MapHttpAttributeRoutes();

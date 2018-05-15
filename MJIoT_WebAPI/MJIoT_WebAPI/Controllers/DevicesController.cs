@@ -10,10 +10,13 @@ using MJIoT_WebAPI.Helpers;
 
 using MJIoT.Storage.PropertyValues;
 using MJIoT.Storage.Models;
+using System.Web.Http.Cors;
+using MJIoT_WebAPI.Models.DTOs;
 
 namespace MJIoT_WebAPI.Controllers
 {
     //[Authorize]
+    [EnableCors(origins: "*", headers: "*", methods: "*", SupportsCredentials = true)]
     public class DevicesController : ApiController
     {
         private RequestHandler _handler;
@@ -23,66 +26,73 @@ namespace MJIoT_WebAPI.Controllers
             _handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
         }
 
-        [HttpPost] 
-        [ActionName("GetDevicesWithListeners")]
-        public async Task<List<DeviceWithListenersDTO>> GetDevicesWithListeners(GetDevicesParams parameters)
-        {
-            //var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
-            return await _handler.GetDevices(GetUserId(), true);
-        }
+        //[HttpGet] 
+        //[ActionName("GetDevicesWithListeners")]
+        //public async Task<List<DeviceWithListenersDTO>> GetDevicesWithListeners()
+        //{
+        //    //var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
+        //    return await _handler.GetDevices(GetUserId(), true);
+        //}
 
-        [HttpPost]
+        [HttpGet]
         [ActionName("GetDevices")]
-        public async Task<List<DeviceWithListenersDTO>> GetDevices(GetDevicesParams parameters)
+        public async Task<List<DeviceWithListenersDTO>> GetDevices(bool includeConnections, bool includeAvailability)
         {
             //var userCheck = _handler.DoUserCheck(parameters.User, parameters.Password);
-            return await _handler.GetDevices(GetUserId(), false);
+            return await _handler.GetDevices(GetUserId(), includeConnections, includeAvailability);
         }
 
-        [HttpPost]
+        [HttpGet]
         [ActionName("GetProperties")]
-        public async Task<List<PropertyDTO>> GetProperties(GetPropertiesParams parameters)
+        public List<PropertyDTO> GetProperties(int deviceId)
         {
-            return await _handler.GetProperties(GetUserId(), parameters);
+            return _handler.GetProperties(GetUserId(), deviceId);
         }
 
         [HttpPost]
-        [ActionName("SetListeners")]
-        public IHttpActionResult SetListeners(ConfigureListenersParams parameters)
+        [ActionName("SetConnections")]
+        public IHttpActionResult SetListeners(IEnumerable<ConnectionInfo> parameters)
         {
-            _handler.SetListeners(GetUserId(), parameters);
+            _handler.SetConnections(GetUserId(), parameters);
 
             return Ok();
         }
 
         [HttpPost]
         [ActionName("AddListeners")]
-        public IHttpActionResult AddListeners(ConfigureListenersParams parameters)
+        public IHttpActionResult AddListeners(IEnumerable<ConnectionInfo> parameters)
         {
-            _handler.AddListeners(GetUserId(), parameters);
+            _handler.AddConnections(GetUserId(), parameters);
 
             return Ok();
         }
 
-        [HttpPost]
-        [ActionName("GetDeviceListeners")]
-        public List<PropertyListenersDTO> GetDeviceListeners(GetDeviceListenersParams parameters)
+        [HttpGet]
+        [ActionName("GetConnections")]
+        public async Task<List<ConnectionPairDTO>> GetConnections()
         {
-            return _handler.GetDeviceListeners(GetUserId(), int.Parse(parameters.DeviceId)) as List<PropertyListenersDTO>;
+            return await _handler.GetConnections(GetUserId()) as List<ConnectionPairDTO>;
         }
 
-        [HttpPost]
-        [ActionName("GetPropertyListeners")]
-        public PropertyListenersDTO GetPropertyListeners(GetPropertyListenersParams parameters)
+        [HttpGet]
+        [ActionName("GetDeviceListeners")]
+        public List<PropertyListenersDTO> GetDeviceListeners(int deviceId)
         {
-            return _handler.GetPropertyListeners(GetUserId(), parameters);
+            return _handler.GetDeviceListeners(GetUserId(), deviceId) as List<PropertyListenersDTO>;
+        }
+
+        [HttpGet]
+        [ActionName("GetPropertyListeners")]
+        public PropertyListenersDTO GetPropertyListeners(int deviceId, int propertyId)
+        {
+            return _handler.GetPropertyListeners(GetUserId(), deviceId, propertyId);
         }
 
         [HttpPost]
         [ActionName("RemoveListeners")]
-        public IHttpActionResult RemoveListeners(ConfigureListenersParams parameters)
+        public IHttpActionResult RemoveListeners(IEnumerable<ConnectionInfo> parameters)
         {
-            _handler.RemoveListeners(GetUserId(), parameters);
+            _handler.RemoveConnections(parameters);
 
             return Ok();
         }

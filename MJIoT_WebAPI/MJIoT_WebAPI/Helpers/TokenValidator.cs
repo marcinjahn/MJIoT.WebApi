@@ -24,6 +24,11 @@ namespace MJIoT_WebAPI.Helpers
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            //PREFLIGHT CALL
+            if (request.Method.Method == "OPTIONS")
+                return base.SendAsync(request, cancellationToken);
+
+
             //determine whether a jwt exists or not
             string token;
             if (!TryRetrieveToken(request, out token))

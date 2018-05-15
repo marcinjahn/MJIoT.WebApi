@@ -18,61 +18,61 @@ namespace MJIoT_WebAPI.Tests
     [TestClass]
     public class TestDevicesController
     {
-        [TestMethod]
-        public void RemoveListenersTest()
-        {
-            var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
+        //[TestMethod]
+        //public void RemoveListenersTest()
+        //{
+        //    var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
 
-            var parameters = new ConfigureListenersParams
-            {
-                SenderId = 7,
-                SenderPropertyId = 5,
-                Listeners = new List<ListenerData>
-                {
-                    new ListenerData
-                    {
-                        DeviceId = 16,
-                        PropertyId = 6,
-                        Condition = ConnectionConditionTypes.NoCondition,
-                        ConditionValue = null,
-                    }
-                },
-                //User = "user1",
-                //Password = "pass1"
-            };
-            handler.RemoveListeners(1, parameters);
-        }
+        //    var parameters = new ConfigureListenersParams
+        //    {
+        //        SenderId = 7,
+        //        SenderPropertyId = 5,
+        //        Listeners = new List<ListenerData>
+        //        {
+        //            new ListenerData
+        //            {
+        //                DeviceId = 16,
+        //                PropertyId = 6,
+        //                Condition = ConnectionConditionTypes.NoCondition,
+        //                ConditionValue = null,
+        //            }
+        //        },
+        //        //User = "user1",
+        //        //Password = "pass1"
+        //    };
+        //    handler.RemoveListeners(1, parameters);
+        //}
 
-        [TestMethod]
-        [Ignore]
-        public void SetListenersTest()
-        {
-            var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
+        //[TestMethod]
+        //[Ignore]
+        //public void SetListenersTest()
+        //{
+        //    var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
 
-            var parameters = new ConfigureListenersParams
-            {
-                SenderId = 7,
-                SenderPropertyId = 5,
-                Listeners = new List<ListenerData>
-                {
-                    new ListenerData
-                    {
-                        DeviceId = 8,
-                        PropertyId = 3,
-                        Condition = ConnectionConditionTypes.NoCondition,
-                        ConditionValue = null
-                    },
-                    new ListenerData
-                    {
-                        DeviceId = 16,
-                        PropertyId = 6,
-                        Condition = ConnectionConditionTypes.NoCondition,
-                        ConditionValue = null,
-                    }
-                }
-            };
-            handler.SetListeners(1, parameters);
-        }
+        //    var parameters = new ConfigureListenersParams
+        //    {
+        //        SenderId = 7,
+        //        SenderPropertyId = 5,
+        //        Listeners = new List<ListenerData>
+        //        {
+        //            new ListenerData
+        //            {
+        //                DeviceId = 8,
+        //                PropertyId = 3,
+        //                Condition = ConnectionConditionTypes.NoCondition,
+        //                ConditionValue = null
+        //            },
+        //            new ListenerData
+        //            {
+        //                DeviceId = 16,
+        //                PropertyId = 6,
+        //                Condition = ConnectionConditionTypes.NoCondition,
+        //                ConditionValue = null,
+        //            }
+        //        }
+        //    };
+        //    handler.SetConnections(1, parameters);
+        //}
 
         [TestMethod]
         public void Test1()
@@ -84,26 +84,26 @@ namespace MJIoT_WebAPI.Tests
             Assert.IsTrue(true);
         }
 
-        [TestMethod]
-        public async Task GetPropertiesTest()
-        {
-            var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
-            var result = await handler.GetProperties(1, new Models.GetPropertiesParams { DeviceId = "18" });
+        //[TestMethod]
+        //public async Task GetPropertiesTest()
+        //{
+        //    var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
+        //    var result = await handler.GetProperties(1, new Models.GetPropertiesParams { DeviceId = "18" });
 
-            Assert.IsTrue(true);
-        }
+        //    Assert.IsTrue(true);
+        //}
 
-        [TestMethod]
-        public async Task GetAllDevicesForUser()
-        {
-            //var controller = new DevicesController();
+        //[TestMethod]
+        //public async Task GetAllDevicesForUser()
+        //{
+        //    //var controller = new DevicesController();
 
-            //var result = await controller.GetDevices(new Models.GetDevicesParams { User = "user1", Password="pass1" });
+        //    //var result = await controller.GetDevices(new Models.GetDevicesParams { User = "user1", Password="pass1" });
 
-            var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
-            var result = await handler.GetDevices(1, true);
-            Assert.IsTrue(true);
-        }
+        //    var handler = new RequestHandler(new UnitOfWork(), new DocumentDbRepository());
+        //    var result = await handler.GetDevices(1, true);
+        //    Assert.IsTrue(true);
+        //}
 
         [TestMethod]
         public void TestGeneratingListeners()

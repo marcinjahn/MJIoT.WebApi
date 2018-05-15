@@ -22,23 +22,23 @@ namespace MJIoT_WebAPI.Models
 
 
 
-    public class ConfigureListenersParams
-    {
-        public int SenderId { get; set; }
-        public int SenderPropertyId { get; set; }
-        public IEnumerable<ListenerData> Listeners { get; set; }
-    }
+    //public class ConfigureListenersParams
+    //{
+    //    public int SenderId { get; set; }
+    //    public int SenderPropertyId { get; set; }
+    //    public IEnumerable<ListenerData> Listeners { get; set; }
+    //}
 
     public class SetPropertyParams
     {
-        public string DeviceId { get; set; }
-        public string PropertyId { get; set; }
+        public int DeviceId { get; set; }
+        public int PropertyId { get; set; }
         public string Value { get; set; }
     }
 
     public class GetPropertiesParams
     {
-        public string DeviceId { get; set; }
+        public int DeviceId { get; set; }
     }
 
     public class GetDeviceListenersParams : GetPropertiesParams { }
@@ -49,11 +49,28 @@ namespace MJIoT_WebAPI.Models
     }
 
 
-    public class ListenerData
+    //public class ListenerData
+    //{
+    //    public int DeviceId { get; set; }
+    //    public int PropertyId { get; set; }
+    //    public ConnectionConditionType Condition { get; set; }
+    //    public string ConditionValue { get; set; }
+    //}
+
+    public class ConnectionInfo
+    {
+        public DevicePropertyPair Sender { get; set; }
+        public DevicePropertyPair Listener { get; set; }
+        public ConnectionFilter Filter { get; set; }
+        public string FilterValue { get; set; }
+        public ConnectionCalculation Calculation { get; set; }
+        public string CalculationValue { get; set; }
+    }
+
+    public class DevicePropertyPair
     {
         public int DeviceId { get; set; }
         public int PropertyId { get; set; }
-        public ConnectionConditionTypes Condition { get; set; }
-        public string ConditionValue { get; set; }
     }
+
 }
