@@ -88,7 +88,16 @@ namespace MJIoT_WebAPI.Controllers
             return _handler.GetPropertyListeners(GetUserId(), deviceId, propertyId);
         }
 
-        [HttpPost]
+        [HttpGet]
+        [ActionName("RemoveConnection")]
+        public IHttpActionResult RemoveConnection(int connectionId)
+        {
+            _handler.RemoveConnections(new int[] { connectionId });
+
+            return Ok();
+        }
+
+        [HttpGet]
         [ActionName("RemoveConnections")]
         public IHttpActionResult RemoveConnections(IEnumerable<int> connectionsIds)
         {
