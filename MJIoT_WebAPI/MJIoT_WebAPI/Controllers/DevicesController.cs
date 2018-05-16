@@ -51,27 +51,27 @@ namespace MJIoT_WebAPI.Controllers
 
         [HttpPost]
         [ActionName("SetConnections")]
-        public IHttpActionResult SetListeners(IEnumerable<ConnectionInfo> parameters)
+        public IHttpActionResult SetListeners(IEnumerable<ConnectionInfo> connections)
         {
-            _handler.SetConnections(GetUserId(), parameters);
+            _handler.SetConnections(GetUserId(), connections);
 
             return Ok();
         }
 
         [HttpPost]
-        [ActionName("AddListeners")]
-        public IHttpActionResult AddListeners(IEnumerable<ConnectionInfo> parameters)
+        [ActionName("AddConnections")]
+        public IHttpActionResult AddConnections(IEnumerable<ConnectionInfo> connections)
         {
-            _handler.AddConnections(GetUserId(), parameters);
+            _handler.AddConnections(GetUserId(), connections);
 
             return Ok();
         }
 
         [HttpGet]
         [ActionName("GetConnections")]
-        public async Task<List<ConnectionPairDTO>> GetConnections()
+        public async Task<List<ConnectionDTO>> GetConnections()
         {
-            return await _handler.GetConnections(GetUserId()) as List<ConnectionPairDTO>;
+            return await _handler.GetConnections(GetUserId()) as List<ConnectionDTO>;
         }
 
         [HttpGet]
@@ -89,10 +89,10 @@ namespace MJIoT_WebAPI.Controllers
         }
 
         [HttpPost]
-        [ActionName("RemoveListeners")]
-        public IHttpActionResult RemoveListeners(IEnumerable<ConnectionInfo> parameters)
+        [ActionName("RemoveConnections")]
+        public IHttpActionResult RemoveConnections(IEnumerable<int> connectionsIds)
         {
-            _handler.RemoveConnections(parameters);
+            _handler.RemoveConnections(connectionsIds);
 
             return Ok();
         }

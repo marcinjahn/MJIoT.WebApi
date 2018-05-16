@@ -111,10 +111,10 @@ namespace MJIoT_WebAPI.Helpers
 
         }
 
-        internal async Task<List<ConnectionPairDTO>> GetConnections(int userId)
+        internal async Task<List<ConnectionDTO>> GetConnections(int userId)
         {
             var connections = _unitOfWork.Connections.GetUserConnections(userId);
-            var result = new List<ConnectionPairDTO>();
+            var result = new List<ConnectionDTO>();
 
             var nameTasks = new List<Task<string>>();
 
@@ -125,8 +125,9 @@ namespace MJIoT_WebAPI.Helpers
                 nameTasks.Add(senderName);
                 nameTasks.Add(listenerName);
 
-                result.Add(new ConnectionPairDTO
+                result.Add(new ConnectionDTO
                 {
+                    Id = connection.Id,
                     Sender = new DevicePropertyPairDTO
                     {
                         DeviceId = connection.SenderDevice.Id,
@@ -203,11 +204,12 @@ namespace MJIoT_WebAPI.Helpers
             return false;
         }
 
-        public void RemoveConnections(IEnumerable<ConnectionInfo> connectionsData)
+        public void RemoveConnections(IEnumerable<int> connectionsIds)
         {
-            foreach (var connection in connectionsData)
+            foreach (var connectionId in connectionsIds)
             {
-                RemoveConnection(connection);
+                _unitOfWork.Connections.Remove(_unitOfWork.Connections.Get(connectionId));
+                //RemoveConnection(connection);
             }
 
             _unitOfWork.Save();

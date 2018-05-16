@@ -43,8 +43,9 @@ namespace MJIoT_WebAPI.Models.DTOs
         public string CalculationValue { get; set; }
     }
 
-    public class ConnectionPairDTO
+    public class ConnectionDTO
     {
+        public int Id { get; set; }
         public DevicePropertyPairDTO Sender { get; set; }
         public DevicePropertyPairDTO Listener { get; set; }
         public ConnectionFilter Filter { get; set; }
